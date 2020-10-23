@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const _ = require("lodash");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 
@@ -28,9 +29,12 @@ const userSchema = new mongoose.Schema({
   userImage: {
     type: String,
     required: true,
-    default: "uploads/noImg.png",
+    default: getRandomImage(),
   },
-
+  online: {
+    type: Boolean,
+    default:false
+  },
   location: {
     type: String,
     minlength: 5,
@@ -75,6 +79,20 @@ function validateSchema(user) {
     name: Joi.string().trim().min(5).max(200).required(),
   };
   return Joi.validate(user, schema);
+}
+
+function getRandomImage() {
+  const images = [
+    "https://cdn.pixabay.com/photo/2020/02/11/14/36/cat-4839775_960_720.png",
+    "https://thumbs.dreamstime.com/b/vecteur-mignon-de-chat-griffonnage-le-petit-laisse-l-automne-feuilles-mignonnes-petites-148121640.jpg",
+    "https://st3.depositphotos.com/8015362/12750/v/950/depositphotos_127501798-stock-illustration-illustration-on-white-background-sitting.jpg",
+    "https://cdn.pixabay.com/photo/2018/03/14/05/42/monkey-3224416_960_720.png",
+    "https://pixnio.com/free-images/2018/06/09/2018-06-09-11-57-10.png",
+    "https://cdn.greenice.com/44198/vagglampa-giraffe-batteri-0-6w-3xaaa-plastika-mlp-114.jpg"
+  ]
+  
+
+  return _.sample(images);
 }
 
 exports.User = User;

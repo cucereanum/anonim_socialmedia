@@ -3,37 +3,12 @@ const router = express.Router();
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
-const multer = require("multer");
 
 const { reduceUserDetails } = require("../util/validators");
 
 const { User, validate } = require("../models/user");
 const { Scream } = require("../models/scream");
 const { Notification } = require("../models/notification");
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Math.random().toString(36).substring(7) + file.originalname);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  //reject a file
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(null, true);
-  } else cb(null, false);
-};
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 5,
-  },
-  fileFilter: fileFilter,
-});
 
 //get AuthenticatedUser
 router.get("/me", auth, async (req, res) => {
@@ -44,6 +19,17 @@ router.get("/me", auth, async (req, res) => {
   notifications.forEach((doc) => user.notifications.push(doc));
   res.send(user);
 });
+//get online users
+router.get('/online',auth, async (req,res) => {
+   const users = await User.find({online:true})
+  let onlineUsers = [];
+     if(users.length === 0)
+            res.status(400).send("There are not online users")
+
+    users.forEach((doc) => onlineUsers.push(doc.name))
+
+   res.send(onlineUsers)   
+})
 
 //get a User by ID
 router.get("/:id", async (req, res) => {
@@ -108,12 +94,5 @@ router.post("/", async (req, res) => {
   res.header("x-auth-token", token).send(user);
 });
 
-//Upload a image to authenticated user
-router.post("/uploadImage", auth, upload.single("image"), async (req, res) => {
-  const user = await User.findById(req.user._id);
-  user.userImage = req.file.path;
-  await user.save();
-  res.status(200).send(user);
-});
 
 module.exports = router;

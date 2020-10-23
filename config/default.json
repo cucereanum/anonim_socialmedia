@@ -1,3 +1,4 @@
 {
-  "jwtPrivateKey": "mySecureKey"
+  "jwtPrivateKey": "mySecureKey",
+  "connection_url": "mongodb+srv://admin:Mmn2RDk1HQBcor9O@cluster0.vew6i.mongodb.net/Pixel-DB?retryWrites=true&w=majority"
 }
