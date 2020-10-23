@@ -20,7 +20,7 @@ router.get("/me", auth, async (req, res) => {
   res.send(user);
 });
 //get online users
-router.get('/online',auth, async (req,res) => {
+router.get('/online', async (req,res) => {
    const users = await User.find({online:true})
   let onlineUsers = [];
      if(users.length === 0)
