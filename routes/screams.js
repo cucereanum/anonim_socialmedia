@@ -8,9 +8,12 @@ const { Comment } = require("../models/comment");
 const { Notification } = require("../models/notification");
 
 router.get("/", async (req, res) => {
-  const screams = await Scream.find().sort({ date: -1 });
-
+  try {
+    const screams = await Scream.find().sort({ date: -1 });
   res.send(screams);
+  } catch (error) {
+      res.status(500).send("Something went wrong")
+  }
 });
 
 router.post("/", auth, async (req, res) => {
