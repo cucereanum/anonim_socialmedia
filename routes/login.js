@@ -21,17 +21,9 @@ router.post("/", async (req, res) => {
     if (!validPassword)
         return res.status(400).send("Invalid email or password");
     try {
-        user.date = Date.now();
         user.online = true;
         await user.save();
-        const token = jwt.sign(
-            {
-                data: user.name,
-                id: user._id
-            },
-            "secret",
-            { expiresIn: "1h" }
-        );
+        const token = user.generateAuthToken();
         res.send(token);
     } catch (error) {
         res.status(500).send("Something went wrong");
