@@ -31,17 +31,6 @@ router.post("/", async (req, res) => {
     }
 });
 
-router.get("/logout", auth, async (req, res) => {
-    let user = await User.findOne({ name: req.user.name });
-
-    if (!user) return res.status(400).send("User not found");
-
-    user.online = false;
-    await user.save();
-
-    res.send("Logged out successfully");
-});
-
 function validate(req) {
     const schema = {
         email: Joi.string().email().min(5).max(200).required(),

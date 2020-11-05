@@ -26,16 +26,6 @@ router.get("/me", auth, async (req, res) => {
         res.status(500).send("Something went wrong");
     }
 });
-//get online users
-router.get("/online", async (req, res) => {
-    const users = await User.find({ online: true });
-    let onlineUsers = [];
-    if (users.length === 0) res.status(400).send("There are not online users");
-
-    users.forEach((doc) => onlineUsers.push(doc.name));
-
-    res.send(onlineUsers);
-});
 
 //get a User by ID
 router.get("/:id", async (req, res) => {
